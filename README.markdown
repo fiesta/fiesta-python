@@ -24,3 +24,9 @@ response = fiesta.hello()
 print response
 # Should read { "hello": "world" }
 ```
+
+## Authentication
+Note that this library currently assumes that client is a *trusted client*. See the
+[authentication docs](http://docs.fiesta.cc/authentication.html) for more information. We're hoping that someone who
+is actively using the the OAuth authentication will help extend the library to handle those use cases. Pull requests
+are welcomed!
