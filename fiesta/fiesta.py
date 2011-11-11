@@ -1,7 +1,7 @@
 import base64, json, urllib2
 
-api_client_id = "To3-IKknn36qAAAA"
-api_client_secret = "46d028xWl8zXGa3GCOYJMeXlr5pUebCNZcz3SCJj"
+api_client_id = ""
+api_client_secret = ""
 basic_auth = base64.b64encode("%s:%s" % (api_client_id, api_client_secret))
 
 def _create_and_send_request(uri, api_inputs):
