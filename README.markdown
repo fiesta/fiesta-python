@@ -18,9 +18,9 @@ The quickest way to installt his package is with pip:
 Here is an extremely basic usage example to make sure everything is installed correctly
 
 ```pyton
-    from fiesta.fiesta import FiestaAPI
-    fiesta = FiestaAPI()
-    response = fiesta.hello()
-    print response
-    # Should read { "hello": "world" }
+from fiesta.fiesta import FiestaAPI
+fiesta = FiestaAPI()
+response = fiesta.hello()
+print response
+# Should read { "hello": "world" }
 ```
