@@ -1,5 +1,6 @@
 import base64, json, urllib2
 
+
 api_client_id = ""
 api_client_secret = ""
 basic_auth = base64.b64encode("%s:%s" % (api_client_id, api_client_secret))

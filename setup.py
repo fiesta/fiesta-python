@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
 	name='Fiesta Python API Wrapper',
@@ -7,4 +7,5 @@ setup(
 	author='Fiesta API',
 	author_email='api@corps.fiesta.cc',
 	url='https://github.com/fiesta/fiesta-python',
+    packages = find_packages(),
 )
