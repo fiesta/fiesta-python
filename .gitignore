@@ -1,3 +1,11 @@
+*~
+*#*
+.DS*
+*.cm
+*.class
 *.pyc
-*.DS_Store
-*.egg-info*
+*.pyd
+*.so
+src/
+.noseids
+settings.py
