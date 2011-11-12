@@ -17,3 +17,9 @@ class TestApiBasics(FiestaBaseTestCase):
         result = self.api.hello()
 
         self.assertEqual(result['hello'], 'world', msg=u"Hello world was not returned")
+
+    def test_should_create_group(self):
+        group = FiestaGroup.create(self.api, description=u"A group made by the fiesta test suite")
+
+        self.assertTrue(group.id is not None, msg=u"Group ID doesn't exist")
+        self.assertTrue(len(group.id) > 1, msg=u"Group ID doesn't exist")

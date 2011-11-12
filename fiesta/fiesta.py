@@ -135,7 +135,6 @@ class FiestaGroup(object):
         id = response['data']['group_id']
         group = FiestaGroup(api, id)
         group.name = name
-        group.display_name = display_name
 
         # TODO: Allow members to be passed in and auto created using this function
 
