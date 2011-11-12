@@ -10,3 +10,4 @@
 src/
 .noseids
 settings.py
+fiesta.egg-info
