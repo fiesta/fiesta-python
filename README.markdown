@@ -48,3 +48,7 @@ This project is licensed under the Apache License, Version 2.0: http://www.apach
   * Handle errors!
   * Handle OAuth for non-trusted clients
   * Improve tests to cover cases. Mainly to cover tests for the wrapper throwing errors on bad input.
+
+## Credits
+
+  * Jeremy Blanchard ([auzigog](https://github.com/auzigog)) - Initial list management wrapper features
