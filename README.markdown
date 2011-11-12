@@ -35,7 +35,9 @@ Note that this library currently assumes that client is a *trusted client*. See 
 is actively using the the OAuth authentication will help extend the library to handle those use cases. Pull requests
 are welcomed!
 
+## License
 
+This project is licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 
 ## TODO
 
