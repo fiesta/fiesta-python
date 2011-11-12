@@ -21,8 +21,6 @@ import urllib2
 
 
 # Left to be implemented
-# http://docs.fiesta.cc/list-management-api.html#sending-messages
-# http://docs.fiesta.cc/list-management-api.html#messages
 # http://docs.fiesta.cc/list-management-api.html#removing-a-list-member
 # http://docs.fiesta.cc/list-management-api.html#getting-group-user-information
 # http://docs.fiesta.cc/list-management-api.html#getting-group-user-information
@@ -218,6 +216,9 @@ class FiestaGroup(object):
         return user
 
 class FiestaUser(object):
+    """
+    Represents a fiesta user.
+    """
     id = None
     address = None      # Can't actually be retreived from the API, but can be stored here for your conveinence
     groups = None       # A python list of FiestaGroup objects
@@ -236,10 +237,82 @@ class FiestaUser(object):
         pass
 
 
-#def add_member_trusted(group_id, member_email, group_name):
-#    add_member_uri = "https://api.fiesta.cc/membership/%s"
-#
-#    api_inputs = {'group_name': group_name,
-#                  'address': member_email}
-#
-#    _create_and_send_request(add_member_uri % group_id, api_inputs)
+class FiestaMessage(object):
+    """
+    A fiesta message.
+    """
+    api = None
+
+    group = None
+
+    subject = None
+    text = None
+    markdown = None  # If you only specify markdown, it will use it as the plaintext version as well
+
+    id = None
+    thread_id = None
+    sent_message = None  # Holds a FiestaMessage returned by the most recent sent_message that fiesta returned.
+
+    def __init__(self, api, group=None, subject=None, text=None, markdown=None, message_dict=None):
+        """
+        Create a new message object.
+
+        If `message` is provided, then `subject`/`text`/`markdown` will be ignored.
+        """
+        self.api = api
+
+        self.group = group
+
+        if message_dict is not None:
+            self._load_message(message_dict)
+        else:
+            self.subject = subject
+            self.text = text
+            self.markdown = markdown
+
+    def _load_message(self, message_dict):
+        if 'subject' in message_dict:
+            self.subject = message_dict['subject']
+        if 'text' in message_dict:
+            self.text = message_dict['text']
+        if 'markdown' in message_dict:
+            self.markdown = message_dict['markdown']
+
+    def send(self, group_id=None, message=None):
+        """
+        Send this current message to a group.
+
+        `message` can be a dictionary formatted according to http://docs.fiesta.cc/list-management-api.html#messages
+        If message is provided, this method will ignore object-level variables.
+        """
+        if self.group is not None and self.group.id is not None:
+            group_id = self.group.id
+
+        path = 'message/%s' % group_id
+
+        if message is not None:
+            request_data = {
+                'message': message,
+            }
+        else:
+            subject = self.subject
+            text = self.text
+            markdown = self.markdown
+
+            request_data = {
+                'message': {},
+            }
+            if subject:
+                request_data['message']['subject'] = subject
+            if text:
+                request_data['message']['text'] = text
+            if markdown:
+                request_data['message']['markdown'] = markdown
+
+        response_data = self.api.request(path, request_data)
+
+        self.id = response_data['message_id']
+        self.thread_id = response_data['thread_id']
+        self.sent_message = FiestaMessage(self.api, response_data['message'])
+
+        # Can't think of any logical return here
