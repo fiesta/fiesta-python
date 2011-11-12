@@ -215,6 +215,13 @@ class FiestaGroup(object):
         user = FiestaUser(user_id, address=address, groups=[self])
         return user
 
+    def send_message(self, subject=None, text=None, markdown=None, message_dict=None):
+        """
+        Helper function to send a message to a group
+        """
+        message = FiestaMessage(self.api, self, subject, text, markdown, message_dict)
+        return message.send()
+
 class FiestaUser(object):
     """
     Represents a fiesta user.
@@ -278,11 +285,11 @@ class FiestaMessage(object):
         if 'markdown' in message_dict:
             self.markdown = message_dict['markdown']
 
-    def send(self, group_id=None, message=None):
+    def send(self, group_id=None, message_dict=None):
         """
         Send this current message to a group.
 
-        `message` can be a dictionary formatted according to http://docs.fiesta.cc/list-management-api.html#messages
+        `message_dict` can be a dictionary formatted according to http://docs.fiesta.cc/list-management-api.html#messages
         If message is provided, this method will ignore object-level variables.
         """
         if self.group is not None and self.group.id is not None:
@@ -290,9 +297,9 @@ class FiestaMessage(object):
 
         path = 'message/%s' % group_id
 
-        if message is not None:
+        if message_dict is not None:
             request_data = {
-                'message': message,
+                'message': message_dict,
             }
         else:
             subject = self.subject
