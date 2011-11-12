@@ -1,0 +1,6 @@
+
+
+# For the tests to run, you must specify a FIESTA_CLIENT_ID and FIESTA_CLIENT_SECRET for them to run against
+# Once you have done so, please rename this file from settings_test.py.example to settings_test.py
+FIESTA_CLIENT_ID = ''
+FIESTA_CLIENT_SECRET = ''

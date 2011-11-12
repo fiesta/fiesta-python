@@ -6,8 +6,8 @@
 *.pyc
 *.pyd
 *.so
-*.egg-info*
 src/
 .noseids
 settings.py
+fiesta/settings_test.py
 fiesta.egg-info
