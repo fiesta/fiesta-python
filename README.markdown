@@ -22,9 +22,15 @@ Here is an extremely basic usage example to make sure everything is installed co
 
 Here is how you would create a group:
 
-    from fiesta import FiestaAPI
     fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
     group = FiestaGroup.create(fiesta, description='My new group!')
+
+Here is how you would add new users to an existing group:
+
+    fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
+    group = FiestaGroup(fiesta, id='MyGroupID')  # Group IDs look something like this: Ar4i3_yFstAyA9AA
+    group.name = 'awesomegroup'  # Currently need to supply this manually since there is no built-in default name for each group
+    new_user = group.add_member('test@example.com', display_name="Test User")
 
 
 ## Authentication
