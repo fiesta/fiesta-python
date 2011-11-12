@@ -159,12 +159,12 @@ class FiestaGroup(object):
 
         # Load the group name
 
-    def add_member(self, address, name=None, display_name=None, welcome_message=None):
+    def add_member(self, address, group_name=None, member_display_name=None, welcome_message=None):
         """
         Add a member to a group. http://docs.fiesta.cc/list-management-api.html#adding-members
 
-        Since each member can access a group using their own name, you can override the `name` in this method.
-        By default, the group will have the name specified on the class level `name` property.
+        `group_name` Since each member can access a group using their own name, you can override the `group_name` in
+        this method. By default, the group will have the name specified on the class level `group_name` property.
 
         `display_name` is the full name of the user that they will see throughout the UI if this is a new account.
         `welcome_message` should be a dictionary specified according to the docs. If you set it to False, no message
@@ -178,12 +178,12 @@ class FiestaGroup(object):
         path = 'membership/%s' % self.id
         data = { 'address': address }
 
-        group_name = name or self.name
+        group_name = group_name or self.name
         if group_name:
             data['group_name'] = group_name
 
-        if display_name:
-            data['display_name'] = display_name
+        if member_display_name:
+            data['display_name'] = member_display_name
 
         if welcome_message:
             data['welcome_message'] = welcome_message
