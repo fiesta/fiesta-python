@@ -1,10 +1,11 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
-	name='Fiesta Python API Wrapper',
-	version='1.0',
-	description='Wrapper for Fiesta.cc API',
-	author='Fiesta API',
-	author_email='api@corps.fiesta.cc',
-	url='https://github.com/fiesta/fiesta-python',
+    name='fiesta',
+    version='0.1',
+    description='Wrapper for the Fiesta (https://fiesta.cc) API',
+    author='Fiesta Technology',
+    author_email='support@corps.fiesta.cc',
+    url='https://github.com/fiesta/fiesta-python',
+    packages = find_packages(),
 )
