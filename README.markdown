@@ -26,7 +26,7 @@ Here is how you would create a group:
 
     from fiesta import FiestaAPI
     fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
-    group = fiesta.group.create(description='My new group!')
+    group = FiestaGroup.create(fiesta, description='My new group!')
 
 
 ## Authentication
@@ -41,3 +41,4 @@ are welcomed!
 
   * Handle errors!
   * Handle OAuth for non-trusted clients
+  * Write tests
