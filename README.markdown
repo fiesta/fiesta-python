@@ -24,7 +24,7 @@ Here is an extremely basic usage example to make sure everything is installed co
 
 Here is how you would create a group:
 
-    fromt fiesta import FiestaAPI
+    from fiesta import FiestaAPI
     fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
     group = fiesta.group.create(description='My new group!')
 
