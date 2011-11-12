@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+######
+# Authors:
+#  Jeremy Blanchard (auzigog@gmail.com) - Nov 2011 - Initial list management wrapper
 
 import json
 import base64
@@ -18,7 +21,6 @@ import urllib2
 
 
 # Left to be implemented
-#
 # http://docs.fiesta.cc/list-management-api.html#sending-messages
 # http://docs.fiesta.cc/list-management-api.html#messages
 # http://docs.fiesta.cc/list-management-api.html#removing-a-list-member
@@ -38,18 +40,16 @@ class FiestaAPI(object):
     client_id = None
     client_secret = None
     domain = None               # For custom domain support
-    default_address = None      # Fallback email address to use as owner of lists
 
     # Strore recent request and response information
     _last_request = None
     _last_response = None
     _last_response_str = None
 
-    def __init__(self, client_id=None, client_secret=None, domain=None, default_address=None):
+    def __init__(self, client_id=None, client_secret=None, domain=None):
         self.client_id = client_id
         self.client_secret = client_secret
         self.domain = domain
-        self.default_address = default_address
 
     def request(self, request_path, data=None, do_authentication=True, is_json=True):
         """
@@ -97,10 +97,9 @@ class FiestaAPI(object):
 class FiestaGroup(object):
     api = None
 
-    # Fiesta supports each group member having a different address for the group. The name and display_name properties
-    # are the defaults that the group will use if you don't choose to override them on a per-member basis.
+    # Fiesta supports each group member having a different address pointing to the same group. The FiestaGroup name
+    # property is the default that the group will use if you don't choose to override this on a per-member basis.
     name = None
-    display_name = None
     description = None
     id = None
 
@@ -115,7 +114,7 @@ class FiestaGroup(object):
         return "%s: %s" % (self.name, self.description)
 
     @staticmethod
-    def create(api, name=None, display_name=None, description=None, members=None):
+    def create(api, name=None, description=None, members=None):
         """
         http://docs.fiesta.cc/list-management-api.html#creating-a-group
 
@@ -165,9 +164,10 @@ class FiestaGroup(object):
         """
         Add a member to a group. http://docs.fiesta.cc/list-management-api.html#adding-members
 
-        Since each member can access a group using their own name, you can override the `group_name` in this method.
+        Since each member can access a group using their own name, you can override the `name` in this method.
         By default, the group will have the name specified on the class level `name` property.
 
+        `display_name` is the full name of the user that they will see throughout the UI if this is a new account.
         `welcome_message` should be a dictionary specified according to the docs. If you set it to False, no message
         will be sent. See http://docs.fiesta.cc/list-management-api.html#message for formatting details.
         """
@@ -183,9 +183,8 @@ class FiestaGroup(object):
         if group_name:
             data['group_name'] = group_name
 
-        real_display_name = display_name or self.display_name
-        if real_display_name:
-            data['display_name'] = real_display_name
+        if display_name:
+            data['display_name'] = display_name
 
         if welcome_message:
             data['welcome_message'] = welcome_message
@@ -194,7 +193,7 @@ class FiestaGroup(object):
 
         response = self.api.request(path, data)
         user_id = response['data']['user_id']
-        user = FiestaUser(user_id,address=address,groups=[self])
+        user = FiestaUser(user_id, address=address, groups=[self])
         return user
 
 class FiestaUser(object):
@@ -211,6 +210,9 @@ class FiestaUser(object):
     def by_id(api):
         pass
 
+    def load_groups(self):
+        # TODO: Implement the ability to load all of this members groups
+        pass
 
 
 #def add_member_trusted(group_id, member_email, group_name):

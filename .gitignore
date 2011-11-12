@@ -9,5 +9,5 @@
 src/
 .noseids
 settings.py
-fiesta/settings_test.py
+settings_test.py
 fiesta.egg-info
