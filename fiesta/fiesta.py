@@ -45,16 +45,21 @@ class FiestaAPI(object):
     _last_request = None
     _last_response = None
     _last_response_str = None
+    _last_status_code = None
+    _last_status_message = None
 
     def __init__(self, client_id=None, client_secret=None, domain=None):
         self.client_id = client_id
         self.client_secret = client_secret
         self.domain = domain
 
-    def request(self, request_path, data=None, do_authentication=True, is_json=True):
+    def request(self, request_path, data=None, do_authentication=True, is_json=True, return_data=True):
         """
         Core "worker" for making requests and parsing JSON responses. Data should be a dictionary structured to match
         the fiesta docs.
+
+        `return_data` automatically grabs the ['data'] key out of the dictinary and returns that instead of the entire
+        response
         """
         uri = self.BASE_URI % request_path
         request = urllib2.Request(uri)
@@ -71,13 +76,30 @@ class FiestaAPI(object):
             request.add_data(json.dumps(data))
 
         response = self._make_request(request)
-        return response
+
+        if 'status' in response:
+            # Grab the status info if it exists
+            self._last_status_code = response['status']['code']
+            if 'message' in response['status']:
+                self._last_status_message = response['status']['message']
+
+        if return_data and 'data' in response:
+            # Return the data dictionary since that is what we care about most of the time
+            response_data = response['data']
+            return response_data
+        else:
+            # Otherwise return the entire response. This is mainly useful for "hello world"
+            return response
 
     def _make_request(self, request):
+        """
+        Does the magic of actually sending the request and parsing the response
+        """
         # TODO: I'm sure all kinds of error checking needs to go here
         response_raw = urllib2.urlopen(request)
         response_str = response_raw.read()
         response = json.loads(response_str)
+
         self._last_request = request
         self._last_response = response_raw
         self._last_response_str = response_str
@@ -130,9 +152,9 @@ class FiestaGroup(object):
         if api.domain:
             data['domain'] = api.domain
 
-        response = api.request(path, data=data)
+        response_data = api.request(path, data=data)
 
-        id = response['data']['group_id']
+        id = response_data['group_id']
         group = FiestaGroup(api, id)
         group.name = name
 
@@ -190,8 +212,8 @@ class FiestaGroup(object):
         elif welcome_message is False:
             data['welcome_message'] = 'false'  # Do not send a welcome message
 
-        response = self.api.request(path, data)
-        user_id = response['data']['user_id']
+        response_data = self.api.request(path, data)
+        user_id = response_data['user_id']
         user = FiestaUser(user_id, address=address, groups=[self])
         return user
 
