@@ -123,12 +123,14 @@ class FiestaGroup(object):
     description = None
     id = None
 
-    def __init__(self, api, id=None):
+    def __init__(self, api, id=None, name=None, description=None):
         if api is None:
             api = FiestaAPI()
         self.api = api
 
         self.id = id
+        self.name = name
+        self.description = description
 
     def __unicode__(self):
         return "%s: %s" % (self.name, self.description)
