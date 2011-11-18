@@ -32,13 +32,6 @@ Here is how you would add new users to an existing group:
     group.name = 'awesomegroup'  # Currently need to supply this manually since there is no built-in default name for each group
     new_user = group.add_member('test@example.com', member_display_name="Test User")
 
-
-## Authentication
-Note that this library currently assumes that client is a *trusted client*. See the
-[authentication docs](http://docs.fiesta.cc/authentication.html) for more information. We're hoping that someone who
-is actively using the the OAuth authentication will help extend the library to handle those use cases. Pull requests
-are welcomed!
-
 ## License
 
 This project is licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
