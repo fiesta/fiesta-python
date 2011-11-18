@@ -1,7 +1,8 @@
 import unittest
 
 from fiesta import FiestaAPI, FiestaGroup, FiestaUser
-from fiesta.tests.settings_test import FIESTA_CLIENT_ID, FIESTA_CLIENT_SECRET
+from settings_test import FIESTA_CLIENT_ID, FIESTA_CLIENT_SECRET
+
 
 class FiestaBaseTestCase(unittest.TestCase):
     api = None
