@@ -51,4 +51,4 @@ This project is licensed under the Apache License, Version 2.0: http://www.apach
 
 ## Credits
 
-  * Jeremy Blanchard ([auzigog](https://github.com/auzigog)) - Initial list management wrapper features
+  * Jeremy Blanchard ([auzigog](https://github.com/auzigog)) - Initial list management wrapper features, original author of this project.
