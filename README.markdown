@@ -15,22 +15,39 @@ The quickest way to install this package is with pip:
 
 Here is an extremely basic usage example to make sure everything is installed correctly:
 
-    from fiesta import FiestaAPI
-    fiesta = FiestaAPI()
-    print fiesta.hello()
-    # Should print {u'hello': u'world'}
+```python
+from fiesta import FiestaAPI
+fiesta = FiestaAPI()
+print fiesta.hello()
+# Should print {u'hello': u'world'}
+```
 
 Here is how you would create a group:
 
-    fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
-    group = FiestaGroup.create(fiesta, description='My new group!')
+```python
+fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
+group = FiestaGroup.create(fiesta, description='My new group!')
+```
 
 Here is how you would add new users to an existing group:
 
-    fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
-    group = FiestaGroup(fiesta, id='MyGroupID')  # Group IDs look something like this: Ar4i3_yFstAyA9AA
-    group.name = 'awesomegroup'  # Currently need to supply this manually since there is no built-in default name for each group
-    new_user = group.add_member('test@example.com', member_display_name="Test User")
+```python
+fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
+group = FiestaGroup(fiesta, id='MyGroupID')  # Group IDs look something like this: Ar4i3_yFstAyA9AA
+group.name = 'awesomegroup'  # Currently need to supply this manually since there is no built-in default name for each group
+new_user = group.add_member('test@example.com', member_display_name="Test User")
+```
+
+## Testing
+
+To run the tests, you'll need valid Fiesta client credentials (the tests connect to the Fiesta [API sandbox](http://docs.fiesta.cc/sandbox.html)). Create a file in the `test/` directory called `settings_test.py` with the following contents:
+
+```python
+FIESTA_CLIENT_ID = 'your-client-id-here'
+FIESTA_CLIENT_SECRET = 'your-client-secret-here'
+```
+
+The easiest way to run the tests is to install [nose](http://readthedocs.org/docs/nose/en/latest/) and run `nosetests`.
 
 ## License
 
