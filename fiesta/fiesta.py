@@ -29,13 +29,13 @@ import urllib2
 
 class FiestaAPI(object):
     """
-    A Python wrapper to the Fiesta.cc API: http://docs.fiesta.cc/
+    A Python wrapper for the Fiesta API: http://docs.fiesta.cc/
     """
     client_id = None
     client_secret = None
     domain = None               # For custom domain support
 
-    # Strore recent request and response information
+    # Store recent request and response information
     _last_request = None
     _last_response = None
     _last_response_str = None
@@ -46,18 +46,18 @@ class FiestaAPI(object):
         self.client_id = client_id
         self.client_secret = client_secret
         self.domain = domain
+        self.sandbox = sandbox
         if sandbox:
             self.base_uri = "https://sandbox.fiesta.cc/%s"
         else:
             self.base_uri = "https://api.fiesta.cc/%s"
 
-    def request(self, request_path, data=None, do_authentication=True, is_json=True, return_data=True):
+    def request(self, request_path, data=None, do_authentication=True, is_json=True):
         """
-        Core "worker" for making requests and parsing JSON responses. Data should be a dictionary structured to match
-        the fiesta docs.
+        Core "worker" for making requests and parsing JSON responses.
 
-        `return_data` automatically grabs the ['data'] key out of the dictinary and returns that instead of the entire
-        response
+        If `is_json` is ``True``, `data` should be a dictionary which
+        will be JSON-encoded.
         """
         uri = self.base_uri % request_path
         request = urllib2.Request(uri)
@@ -65,13 +65,16 @@ class FiestaAPI(object):
         # Build up the request
         if is_json:
             request.add_header("Content-Type", "application/json")
+            if data is not None:
+                request.add_data(json.dumps(data))
+        elif data is not None:
+            request.add_data(data)
+
         if do_authentication:
             if self.client_id is None or self.client_secret is None:
                 raise Exception(u"You need to supply a client_id and client_secret to perform an authenticated request")
             basic_auth = base64.b64encode("%s:%s" % (self.client_id, self.client_secret))
             request.add_header("Authorization", "Basic %s" % basic_auth)
-        if data is not None:
-            request.add_data(json.dumps(data))
 
         response = self._make_request(request)
 
@@ -81,13 +84,10 @@ class FiestaAPI(object):
             if 'message' in response['status']:
                 self._last_status_message = response['status']['message']
 
-        if return_data and 'data' in response:
-            # Return the data dictionary since that is what we care about most of the time
-            response_data = response['data']
-            return response_data
-        else:
-            # Otherwise return the entire response. This is mainly useful for "hello world"
-            return response
+            if 'data' in response:
+                return response['data']
+
+        return response
 
     def _make_request(self, request):
         """
@@ -108,17 +108,27 @@ class FiestaAPI(object):
         path = 'hello'
         response = self.request(path, do_authentication=False)
         return response
-    
+
     def create_group(self, **kwargs):
         """Helper function for creating groups"""
         return FiestaGroup.create(self, **kwargs)
+
+    def reset(self):
+        """
+        Reset sandbox state.
+        """
+        if not self.sandbox:
+            raise errors.FiestaError("Can only reset on API Sandbox")
+        self.request("reset", "", do_authentication=True)
 
 
 class FiestaGroup(object):
     api = None
 
-    # Fiesta supports each group member having a different address pointing to the same group. The FiestaGroup name
-    # property is the default that the group will use if you don't choose to override this on a per-member basis.
+    # Fiesta supports each group member having a different address
+    # pointing to the same group. The FiestaGroup name property is the
+    # default that the group will use if you don't choose to override
+    # this on a per-member basis.
     name = None
     description = None
     id = None

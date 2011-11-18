@@ -9,10 +9,10 @@ class FiestaBaseTestCase(unittest.TestCase):
 
     def setUp(self):
         self.api = FiestaAPI(client_id=FIESTA_CLIENT_ID, client_secret=FIESTA_CLIENT_SECRET, sandbox=True)
+        self.api.reset()
 
 
 class FiestaListManagementTestCase(FiestaBaseTestCase):
-
 
     def test_should_get_hello(self):
         result = self.api.hello()
