@@ -8,7 +8,7 @@ class FiestaBaseTestCase(unittest.TestCase):
     api = None
 
     def setUp(self):
-        self.api = FiestaAPI(client_id=FIESTA_CLIENT_ID, client_secret=FIESTA_CLIENT_SECRET)
+        self.api = FiestaAPI(client_id=FIESTA_CLIENT_ID, client_secret=FIESTA_CLIENT_SECRET, sandbox=True)
 
 
 class FiestaListManagementTestCase(FiestaBaseTestCase):

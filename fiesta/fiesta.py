@@ -31,8 +31,6 @@ class FiestaAPI(object):
     """
     A Python wrapper to the Fiesta.cc API: http://docs.fiesta.cc/
     """
-    BASE_URI = "https://api.fiesta.cc/%s"
-
     client_id = None
     client_secret = None
     domain = None               # For custom domain support
@@ -44,10 +42,14 @@ class FiestaAPI(object):
     _last_status_code = None
     _last_status_message = None
 
-    def __init__(self, client_id=None, client_secret=None, domain=None):
+    def __init__(self, client_id=None, client_secret=None, domain=None, sandbox=False):
         self.client_id = client_id
         self.client_secret = client_secret
         self.domain = domain
+        if sandbox:
+            self.base_uri = "https://sandbox.fiesta.cc/%s"
+        else:
+            self.base_uri = "https://api.fiesta.cc/%s"
 
     def request(self, request_path, data=None, do_authentication=True, is_json=True, return_data=True):
         """
@@ -57,7 +59,7 @@ class FiestaAPI(object):
         `return_data` automatically grabs the ['data'] key out of the dictinary and returns that instead of the entire
         response
         """
-        uri = self.BASE_URI % request_path
+        uri = self.base_uri % request_path
         request = urllib2.Request(uri)
 
         # Build up the request
@@ -65,7 +67,7 @@ class FiestaAPI(object):
             request.add_header("Content-Type", "application/json")
         if do_authentication:
             if self.client_id is None or self.client_secret is None:
-                raise Exception(u"You need to supply a client_id and client_secret to perform an authetnicated requrest")
+                raise Exception(u"You need to supply a client_id and client_secret to perform an authenticated request")
             basic_auth = base64.b64encode("%s:%s" % (self.client_id, self.client_secret))
             request.add_header("Authorization", "Basic %s" % basic_auth)
         if data is not None:
