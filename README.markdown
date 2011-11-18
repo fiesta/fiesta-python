@@ -39,7 +39,7 @@ This project is licensed under the Apache License, Version 2.0: http://www.apach
 ## TODO
 
   * Handle errors!
-  * Handle OAuth for non-trusted clients
+  * Handle OAuth for user auth
   * Improve tests to cover cases. Mainly to cover tests for the wrapper throwing errors on bad input.
 
 ## Credits

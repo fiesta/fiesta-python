@@ -33,8 +33,6 @@ class FiestaAPI(object):
     """
     BASE_URI = "https://api.fiesta.cc/%s"
 
-    trusted_client = True # Will help later when abstracting this code to handle
-
     client_id = None
     client_secret = None
     domain = None               # For custom domain support
@@ -141,12 +139,10 @@ class FiestaGroup(object):
         http://docs.fiesta.cc/list-management-api.html#creating-a-group
 
         200 character max on the description.
-        If the client is not trusted, address is required
         """
         path = 'group'
 
         data = {}
-        # If trusted, these are the only arguments that are available
         if description:
             data['description'] = description
         if api.domain:
