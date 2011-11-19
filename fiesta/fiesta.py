@@ -333,7 +333,7 @@ class FiestaAPISandbox(FiestaAPI):
     Sandbox version of the API that can be used for testing purposes without sending real emails or modifying real objects
     http://docs.fiesta.cc/sandbox.html
     """
-    api_url = 'https://sandbox.fiesta.cc/%s'
+    api_uri = 'https://sandbox.fiesta.cc/%s'
 
     def mailbox(self):
         """
