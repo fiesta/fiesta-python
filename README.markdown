@@ -25,16 +25,15 @@ print fiesta.hello()
 Here is how you would create a group:
 
 ```python
-fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
-group = FiestaGroup.create(fiesta, description='My new group!')
+fiesta = FiestaAPI('your-client-id-here', 'your-client-secret-here')
+group = FiestaGroup.create(fiesta, default_name='new-group' description='My new group!')
 ```
 
 Here is how you would add new users to an existing group:
 
 ```python
-fiesta = FiestaAPI('my-client-id-here', 'my-client-secret-here')
+fiesta = FiestaAPI('your-client-id-here', 'your-client-secret-here')
 group = FiestaGroup(fiesta, id='MyGroupID')  # Group IDs look something like this: Ar4i3_yFstAyA9AA
-group.name = 'awesomegroup'  # Currently need to supply this manually since there is no built-in default name for each group
 new_user = group.add_member('test@example.com', member_display_name="Test User")
 ```
 
