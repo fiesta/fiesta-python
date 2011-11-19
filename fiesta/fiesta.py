@@ -148,7 +148,6 @@ class FiestaGroup(object):
         path = 'group'
 
         data = {}
-        self.default_name = default_name
         if default_name:
             data['default_group_name'] = default_name
         if description:
@@ -160,6 +159,7 @@ class FiestaGroup(object):
 
         id = response_data['group_id']
         group = FiestaGroup(api, id)
+        group.default_name = response_data['default_group_name']
 
         # TODO: Allow members to be passed in and auto created using this function
 
@@ -349,6 +349,7 @@ class FiestaAPISandbox(FiestaAPI):
         http://docs.fiesta.cc/sandbox.html#post--reset
         """
         path = 'reset'
-        response_data = self.request(path)
+        request_data = {}   # Need to put data into the request to force urllib2 to make it a POST request
+        response_data = self.request(path, request_data)
         success = response_data['reset']   # True of False
         return success
