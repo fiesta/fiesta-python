@@ -119,27 +119,27 @@ class FiestaGroup(object):
     api = None
 
     # Fiesta supports each group member having a different address
-    # pointing to the same group. The FiestaGroup name property is the
+    # pointing to the same group. The FiestaGroup `default_name` property is the
     # default that the group will use if you don't choose to override
     # this on a per-member basis.
-    name = None
+    default_name = None
     description = None
     id = None
 
-    def __init__(self, api, id=None, name=None, description=None):
+    def __init__(self, api, id=None, default_name=None, description=None):
         if api is None:
             api = FiestaAPI()
         self.api = api
 
         self.id = id
-        self.name = name
+        self.default_name = default_name
         self.description = description
 
     def __unicode__(self):
-        return "%s: %s" % (self.name, self.description)
+        return "%s: %s" % (self.default_name, self.description)
 
     @staticmethod
-    def create(api, name=None, description=None, members=None):
+    def create(api, default_name=None, description=None, members=None):
         """
         http://docs.fiesta.cc/list-management-api.html#creating-a-group
 
@@ -148,6 +148,9 @@ class FiestaGroup(object):
         path = 'group'
 
         data = {}
+        self.default_name = default_name
+        if default_name:
+            data['default_group_name'] = default_name
         if description:
             data['description'] = description
         if api.domain:
@@ -157,7 +160,6 @@ class FiestaGroup(object):
 
         id = response_data['group_id']
         group = FiestaGroup(api, id)
-        group.name = name
 
         # TODO: Allow members to be passed in and auto created using this function
 
@@ -167,28 +169,12 @@ class FiestaGroup(object):
     def by_id(api, id):
         pass
 
-    def guess_name_from_first_user(self, user_id=None):
-        """
-        Since group names *may* be specified on a per-member basis, knowing the group ID doesn't give us the `name` or
-        `display_name`. This method loads the `name` and `display_name` from the first user.
-
-        If you specify a User ID to load it from, this method only requires one API request.
-        If you do not specify a User ID, this method requires two API requests.
-        """
-        # TODO: Finish implementing this function
-        if user_id is None:
-            # TODO: get membership list
-            pass
-
-        # Load the group name
-
     def add_member(self, address, group_name=None, member_display_name=None, welcome_message=None):
         """
         Add a member to a group. http://docs.fiesta.cc/list-management-api.html#adding-members
 
         `group_name` Since each member can access a group using their own name, you can override the `group_name` in
-        this method. By default, the group will have the name specified on the class level `group_name` property.
-
+        this method. By default, the group will have the name specified on the class level `default_name` property.
         `display_name` is the full name of the user that they will see throughout the UI if this is a new account.
         `welcome_message` should be a dictionary specified according to the docs. If you set it to False, no message
         will be sent. See http://docs.fiesta.cc/list-management-api.html#message for formatting details.
@@ -201,7 +187,7 @@ class FiestaGroup(object):
         path = 'membership/%s' % self.id
         data = { 'address': address }
 
-        group_name = group_name or self.name
+        group_name = group_name or self.default_name
         if group_name:
             data['group_name'] = group_name
 
@@ -224,6 +210,7 @@ class FiestaGroup(object):
         """
         message = FiestaMessage(self.api, self, subject, text, markdown, message_dict)
         return message.send()
+
 
 class FiestaUser(object):
     """
