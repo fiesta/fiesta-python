@@ -31,6 +31,8 @@ class FiestaAPI(object):
     """
     A Python wrapper for the Fiesta API: http://docs.fiesta.cc/
     """
+    api_uri = 'https://api.fiesta.cc/%s'
+
     client_id = None
     client_secret = None
     domain = None               # For custom domain support
@@ -42,15 +44,10 @@ class FiestaAPI(object):
     _last_status_code = None
     _last_status_message = None
 
-    def __init__(self, client_id=None, client_secret=None, domain=None, sandbox=False):
+    def __init__(self, client_id=None, client_secret=None, domain=None):
         self.client_id = client_id
         self.client_secret = client_secret
         self.domain = domain
-        self.sandbox = sandbox
-        if sandbox:
-            self.base_uri = "https://sandbox.fiesta.cc/%s"
-        else:
-            self.base_uri = "https://api.fiesta.cc/%s"
 
     def request(self, request_path, data=None, do_authentication=True, is_json=True):
         """
@@ -59,7 +56,7 @@ class FiestaAPI(object):
         If `is_json` is ``True``, `data` should be a dictionary which
         will be JSON-encoded.
         """
-        uri = self.base_uri % request_path
+        uri = self.api_uri % request_path
         request = urllib2.Request(uri)
 
         # Build up the request
@@ -108,18 +105,11 @@ class FiestaAPI(object):
         path = 'hello'
         response = self.request(path, do_authentication=False)
         return response
-
+    
     def create_group(self, **kwargs):
         """Helper function for creating groups"""
         return FiestaGroup.create(self, **kwargs)
 
-    def reset(self):
-        """
-        Reset sandbox state.
-        """
-        if not self.sandbox:
-            raise errors.FiestaError("Can only reset on API Sandbox")
-        self.request("reset", "", do_authentication=True)
 
 
 class FiestaGroup(object):
@@ -333,3 +323,42 @@ class FiestaMessage(object):
         self.sent_message = FiestaMessage(self.api, response_data['message'])
 
         # Can't think of any logical return here
+
+
+class FiestaAPISandbox(FiestaAPI):
+    """
+    Sandbox version of the API that can be used for testing purposes without sending real emails or modifying real objects
+    http://docs.fiesta.cc/sandbox.html
+    """
+    api_url = 'https://sandbox.fiesta.cc/%s'
+
+    def mailbox(self):
+        """
+        Get a dictionary containing email addresses of people who have received messages from the sandbox
+        http://docs.fiesta.cc/sandbox.html#get--mailbox
+
+        Structured like this:
+            {
+              mike@corp.fiesta.cc: [
+                {
+                  text: "Hello world.",
+                  subject: "Saying hello"
+                },
+                ...
+              ],
+              ...
+            }
+        """
+        path = 'mailbox'
+        response_data = self.request(path)
+        return response_data
+
+    def reset(self):
+        """
+        Reset the state of the sandbox.
+        http://docs.fiesta.cc/sandbox.html#post--reset
+        """
+        path = 'reset'
+        response_data = self.request(path)
+        success = response_data['reset']   # True of False
+        return success

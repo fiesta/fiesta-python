@@ -1,6 +1,6 @@
 import unittest
 
-from fiesta import FiestaAPI, FiestaGroup, FiestaUser
+from fiesta import FiestaAPI, FiestaAPISandbox, FiestaGroup, FiestaUser
 from settings_test import FIESTA_CLIENT_ID, FIESTA_CLIENT_SECRET
 
 
@@ -8,7 +8,7 @@ class FiestaBaseTestCase(unittest.TestCase):
     api = None
 
     def setUp(self):
-        self.api = FiestaAPI(client_id=FIESTA_CLIENT_ID, client_secret=FIESTA_CLIENT_SECRET, sandbox=True)
+        self.api = FiestaAPISandbox(client_id=FIESTA_CLIENT_ID, client_secret=FIESTA_CLIENT_SECRET)
         self.api.reset()
 
 
