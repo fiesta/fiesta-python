@@ -73,7 +73,10 @@ class FiestaAPI(object):
             basic_auth = base64.b64encode("%s:%s" % (self.client_id, self.client_secret))
             request.add_header("Authorization", "Basic %s" % basic_auth)
 
-        response = self._make_request(request)
+        try:
+            response = self._make_request(request)
+        except Exception as inst:
+            raise # automatically re-raises the exception
 
         if 'status' in response:
             # Grab the status info if it exists
