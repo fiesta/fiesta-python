@@ -28,11 +28,12 @@ class FiestaListManagementTestCase(FiestaBaseTestCase):
         self.assertTrue(len(group.id) > 1, msg=u"Group ID doesn't exist")
 
     def test_should_add_member_to_group(self):
-        new_group = FiestaGroup.create(self.api, description=u"A group made by the fiesta test suite")
+        group_name = 'test-suite-group'
+        new_group = FiestaGroup.create(self.api, default_name=group_name, description=u"A group made by the fiesta test suite")
 
-        group = FiestaGroup(self.api, new_group.id)   # could just re-use the group above, but this also tests the group init process
-        group.name = 'fiesta-python-test-suite-test-group'
-        user = group.add_member('test@example.com', member_display_name=u"Test User From fiesta-python Test Suite")
+        group = FiestaGroup(self.api, id=new_group.id)   # could just re-use the group above, but this also tests the group init process
+        user = group.add_member('test@example.com', member_display_name='Test User')
 
         self.assertTrue(user is not None, msg=u"User does not exist")
         self.assertTrue(len(user.id) > 1, msg=u"User ID was not stored")
+#        self.assertTrue()  # test that user_group_name matches default_group_name

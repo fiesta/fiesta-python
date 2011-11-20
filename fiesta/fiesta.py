@@ -202,6 +202,7 @@ class FiestaGroup(object):
         response_data = self.api.request(path, data)
         user_id = response_data['user_id']
         user = FiestaUser(user_id, address=address, groups=[self])
+
         return user
 
     def send_message(self, subject=None, text=None, markdown=None, message_dict=None):
@@ -229,7 +230,7 @@ class FiestaUser(object):
     def by_id(api):
         pass
 
-    def load_groups(self):
+    def get_groups(self):
         # TODO: Implement the ability to load all of this members groups
         pass
 
