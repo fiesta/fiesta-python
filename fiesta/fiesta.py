@@ -169,15 +169,28 @@ class FiestaGroup(object):
     def by_id(api, id):
         pass
 
-    def add_member(self, address, group_name=None, display_name=None, welcome_message=None):
+    def add_member(self, address, **kwargs):
         """
-        Add a member to a group. http://docs.fiesta.cc/list-management-api.html#adding-members
+        Add a member to a group.
 
-        `group_name` Since each member can access a group using their own name, you can override the `group_name` in
-        this method. By default, the group will have the name specified on the class level `default_name` property.
-        `display_name` is the full name of the user that they will see throughout the UI if this is a new account.
-        `welcome_message` should be a dictionary specified according to the docs. If you set it to False, no message
-        will be sent. See http://docs.fiesta.cc/list-management-api.html#message for formatting details.
+        All Fiesta membership options can be passed in as keyword
+        arguments. Some valid options include:
+
+        - `group_name`: Since each member can access a group using
+          their own name, you can override the `group_name` in this
+          method. By default, the group will have the name specified
+          on the class level `default_name` property.
+
+        - `display_name` is the full name of the user that they will
+          see throughout the UI if this is a new account.
+
+        - `welcome_message` should be a dictionary specified according
+          to the docs. If you set it to ``False``, no message will be
+          sent. See
+          http://docs.fiesta.cc/list-management-api.html#message for
+          formatting details.
+
+        .. seealso:: `Fiesta API documentation <http://docs.fiesta.cc/list-management-api.html#adding-members>`_
         """
 
         # TODO: Move this requirement to a decorator
@@ -185,21 +198,12 @@ class FiestaGroup(object):
             raise Exception(u"Must specify a group ID when adding a member. Try calling FiestaGroup.by_id().")
 
         path = 'membership/%s' % self.id
-        data = { 'address': address }
+        kwargs["address"] = address
 
-        group_name = group_name or self.default_name
-        if group_name:
-            data['group_name'] = group_name
+        if "group_name" not in kwargs and self.default_name:
+            kwargs["group_name"] = self.default_name
 
-        if display_name:
-            data['display_name'] = display_name
-
-        if welcome_message:
-            data['welcome_message'] = welcome_message
-        elif welcome_message is False:
-            data['welcome_message'] = 'false'  # Do not send a welcome message
-
-        response_data = self.api.request(path, data)
+        response_data = self.api.request(path, kwargs)
         user_id = response_data['user_id']
         user = FiestaUser(user_id, address=address, groups=[self])
 
