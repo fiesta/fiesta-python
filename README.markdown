@@ -9,7 +9,7 @@ http://docs.fiesta.cc
 ## Installation
 The quickest way to install this package is with pip:
 
-    pip install git://github.com/fiesta/fiesta-python.git
+    pip install -e git://github.com/fiesta/fiesta-python.git#egg=fiesta
 
 ## Usage
 
