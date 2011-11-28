@@ -212,6 +212,24 @@ class FiestaGroup(object):
         message = FiestaMessage(self.api, self, subject, text, markdown, message_dict)
         return message.send()
 
+    def add_application(self, application_id, **kwargs):
+        """
+        Add an application to a group.
+
+        `application_id` is the name of the application to add. Any
+        application options can be specified as kwargs.
+        """
+        if self.id is None:
+            raise Exception(u"Must specify a group ID when adding a member. Try calling FiestaGroup.by_id().")
+
+        path = 'group/%s/application' % self.id
+
+        data = {'application_id': application_id}
+        if kwargs:
+            data["options"] = kwargs
+
+        self.api.request(path, data)
+
 
 class FiestaUser(object):
     """
