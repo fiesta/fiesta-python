@@ -169,7 +169,7 @@ class FiestaGroup(object):
     def by_id(api, id):
         pass
 
-    def add_member(self, address, group_name=None, member_display_name=None, welcome_message=None):
+    def add_member(self, address, group_name=None, display_name=None, welcome_message=None):
         """
         Add a member to a group. http://docs.fiesta.cc/list-management-api.html#adding-members
 
@@ -191,8 +191,8 @@ class FiestaGroup(object):
         if group_name:
             data['group_name'] = group_name
 
-        if member_display_name:
-            data['display_name'] = member_display_name
+        if display_name:
+            data['display_name'] = display_name
 
         if welcome_message:
             data['welcome_message'] = welcome_message
