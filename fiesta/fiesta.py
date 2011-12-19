@@ -94,7 +94,12 @@ class FiestaAPI(object):
         Does the magic of actually sending the request and parsing the response
         """
         # TODO: I'm sure all kinds of error checking needs to go here
-        response_raw = urllib2.urlopen(request)
+        try:
+            response_raw = urllib2.urlopen(request)
+        except urllib2.HTTPError, e:
+            print e.read()
+            raise
+
         response_str = response_raw.read()
         response = json.loads(response_str)
 
@@ -204,10 +209,10 @@ class FiestaGroup(object):
             kwargs["group_name"] = self.default_name
 
         response_data = self.api.request(path, kwargs)
-        user_id = response_data['user_id']
-        user = FiestaUser(user_id, address=address, groups=[self])
-
-        return user
+        if 'user_id' in response_data:
+            user_id = response_data['user_id']
+            return FiestaUser(user_id, address=address, groups=[self])
+        return None
 
     def send_message(self, subject=None, text=None, markdown=None, message_dict=None):
         """
