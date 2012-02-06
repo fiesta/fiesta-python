@@ -131,7 +131,7 @@ class FiestaGroup(object):
     description = None
     id = None
 
-    def __init__(self, api, id=None, default_name=None, description=None):
+    def __init__(self, api, id, default_name=None, description=None):
         if api is None:
             api = FiestaAPI()
         self.api = api
@@ -143,8 +143,8 @@ class FiestaGroup(object):
     def __unicode__(self):
         return "%s: %s" % (self.default_name, self.description)
 
-    @staticmethod
-    def create(api, default_name=None, description=None, members=None):
+    @classmethod
+    def create(cls, api, default_name=None, description=None):
         """
         http://docs.fiesta.cc/list-management-api.html#creating-a-group
 
@@ -163,16 +163,14 @@ class FiestaGroup(object):
         response_data = api.request(path, data=data)
 
         id = response_data['group_id']
-        group = FiestaGroup(api, id)
+        group = cls(api, id)
         group.default_name = response_data['default_group_name']
-
-        # TODO: Allow members to be passed in and auto created using this function
 
         return group
 
-    @staticmethod
-    def by_id(api, id):
-        pass
+    @classmethod
+    def from_id(cls, api, id):
+        return cls(api, id)
 
     def add_member(self, address, **kwargs):
         """
@@ -197,11 +195,6 @@ class FiestaGroup(object):
 
         .. seealso:: `Fiesta API documentation <http://docs.fiesta.cc/list-management-api.html#adding-members>`_
         """
-
-        # TODO: Move this requirement to a decorator
-        if self.id is None:
-            raise Exception(u"Must specify a group ID when adding a member. Try calling FiestaGroup.by_id().")
-
         path = 'membership/%s' % self.id
         kwargs["address"] = address
 
@@ -228,9 +221,6 @@ class FiestaGroup(object):
         `application_id` is the name of the application to add. Any
         application options can be specified as kwargs.
         """
-        if self.id is None:
-            raise Exception(u"Must specify a group ID when adding a member. Try calling FiestaGroup.by_id().")
-
         path = 'group/%s/application' % self.id
 
         data = {'application_id': application_id}
@@ -253,8 +243,8 @@ class FiestaUser(object):
         self.address = address
         self.groups = groups
 
-    @staticmethod
-    def by_id(api):
+    @classmethod
+    def from_id(cls, api, id):
         pass
 
     def get_groups(self):
